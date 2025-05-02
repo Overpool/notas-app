@@ -35,7 +35,10 @@ export default {
 
 <style scoped>
 .note {
-  border: 1px solid #000;
+  border: 1px solid #ffffff;
+  border-radius: 7px;
+  box-shadow:0 0 10px rgba(0, 0, 0, 0.5);
+  background-color: #f9f9f9;
   padding: 15px;
   min-height: 100px;
   position: relative;

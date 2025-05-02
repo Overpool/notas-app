@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>NOTAS</h1>
+    <h1>NOTAS UNSCH IS-387</h1>
     
     <div class="input-container">
       <input type="text" v-model="searchQuery" placeholder="Buscar notas...">
@@ -21,6 +21,10 @@
         @delete="deleteNote"
       />
     </div>
+
+    <footer class="app-footer">
+      <p>Trabajo escalado vertical y horizoltal - laboratorio Diseño de Software IS-387 <br> © SOLUTEC-PERÚ 2025  Todos los derechos reservados</p>
+    </footer> 
     
     <!-- Add Note Modal -->
     <AddNoteModal 
@@ -46,6 +50,13 @@
       @edit="openEditNoteModal"
     />
 
+    <!-- Delete Confirmation Modal -->
+    <DeleteConfirmationModal
+      v-if="showDeleteModal"
+      :note="noteToDelete"
+      @close="cancelDelete"
+      @confirm="confirmDelete"
+    />
   </div>
 </template>
 
@@ -56,6 +67,7 @@ import NoteCard from './components/NoteCard.vue';
 import AddNoteModal from './components/AddNoteModal.vue';
 import EditNoteModal from './components/EditNoteModal.vue';
 import ViewNoteModal from './components/ViewNoteModal.vue';
+import DeleteConfirmationModal from './components/DeleteConfirmationModal.vue';
 
 export default {
   name: 'App',
@@ -63,7 +75,8 @@ export default {
     NoteCard,
     AddNoteModal,
     EditNoteModal,
-    ViewNoteModal
+    ViewNoteModal,
+    DeleteConfirmationModal
   },
   setup() {
     const notes = ref([]);
@@ -73,6 +86,7 @@ export default {
     const showAddModal = ref(false);
     const showEditModal = ref(false);
     const showViewModal = ref(false);
+    const showDeleteModal = ref(false);
     
     const newNote = ref({
       title: '',
@@ -87,6 +101,11 @@ export default {
       updated_at: null
     });
     
+    const noteToDelete = ref({
+      id: null,
+      title: ''
+    });
+
     const filteredNotes = computed(() => {
       if (!searchQuery.value) return notes.value;
       
@@ -143,16 +162,41 @@ export default {
       }
     };
 
-    const deleteNote = async (id) => {
-      if (!confirm('¿Está seguro que desea eliminar esta nota?')) return;
-      
+    // const deleteNote = async (id) => {
+    //   const note = notes.value.find(note => note.id === id);
+    //   if (note) {
+    //     noteToDelete.value = {
+    //       id: note.id,
+    //       title: note.title
+    //     };
+    //     showDeleteModal.value = true;
+    //   }
+    // };
+
+    const deleteNote = (id) => {
+      const note = notes.value.find(note => note.id === id);
+      if (note) {
+        noteToDelete.value = {
+          id: note.id,
+          title: note.title
+        };
+        showDeleteModal.value = true;
+      }
+    };
+    
+    const confirmDelete = async () => {
       try {
-        await axios.delete(`${apiUrl}/notes/${id}`);
+        await axios.delete(`${apiUrl}/notes/${noteToDelete.value.id}`);
         await fetchNotes();
+        showDeleteModal.value = false;
       } catch (error) {
         console.error('Error deleting note:', error);
         alert('Error al eliminar la nota');
       }
+    };
+    
+    const cancelDelete = () => {
+      showDeleteModal.value = false;
     };
   
     const openAddNoteModal = () => {
@@ -175,6 +219,7 @@ export default {
       showAddModal.value = false;
       showEditModal.value = false;
       showViewModal.value = false;
+      showDeleteModal.value = false;
     };
     
     onMounted(() => {
@@ -188,12 +233,16 @@ export default {
       showAddModal,
       showEditModal,
       showViewModal,
+      showDeleteModal,
       newNote,
       currentNote,
+      noteToDelete,
       fetchNotes,
       createNote,
       updateNote,
       deleteNote,
+      confirmDelete,
+      cancelDelete,
       openAddNoteModal,
       openEditNoteModal,
       openViewNoteModal,
@@ -209,13 +258,13 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
-  
 }
 body {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
   font-size: 18px;
+  background-color: #f4f4f4
 }
 h1 {
   text-align: center;
@@ -253,5 +302,13 @@ h1 {
   text-align: center;
   margin-top: 50px;
   color: #666;
+}
+.app-footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px 0;
+  border-top: 1px solid #eee;
+  color: #666;
+  font-size: 14px;
 }
 </style>
