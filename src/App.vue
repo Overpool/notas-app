@@ -23,7 +23,7 @@
     </div>
 
     <footer class="app-footer">
-      <p>Trabajo escalado vertical y horizoltal - laboratorio Diseño de Software IS-387 <br> © SOLUTEC-PERÚ 2025  Todos los derechos reservados</p>
+      <p>Trabajo escalado vertical y horizoltal - laboratorio Diseño de Software IS-387</p>
     </footer> 
     
     <!-- Add Note Modal -->
@@ -162,17 +162,6 @@ export default {
       }
     };
 
-    // const deleteNote = async (id) => {
-    //   const note = notes.value.find(note => note.id === id);
-    //   if (note) {
-    //     noteToDelete.value = {
-    //       id: note.id,
-    //       title: note.title
-    //     };
-    //     showDeleteModal.value = true;
-    //   }
-    // };
-
     const deleteNote = (id) => {
       const note = notes.value.find(note => note.id === id);
       if (note) {
@@ -292,7 +281,6 @@ h1 {
   background-color: #000;
   color: #fff;
 }
-
 .notes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -307,7 +295,7 @@ h1 {
   text-align: center;
   margin-top: 50px;
   padding: 20px 0;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #a1a1a1;
   color: #666;
   font-size: 14px;
 }
